@@ -5,240 +5,175 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZTE Attendance Analyzer</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --border: #2a2e3e;
-    --accent: #4f8ef7;
-    --accent2: #7c5cfc;
-    --green: #22c55e;
-    --yellow: #f59e0b;
-    --orange: #f97316;
-    --red: #ef4444;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --radius: 10px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+:root {
+  --bg:#0f1117; --surface:#1a1d27; --surface2:#1e2236; --border:#2a2e3e;
+  --accent:#4f8ef7; --accent2:#7c5cfc; --green:#22c55e; --yellow:#f59e0b;
+  --orange:#f97316; --red:#ef4444; --pink:#ec4899; --cyan:#06b6d4;
+  --text:#e2e8f0; --muted:#64748b; --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+header{background:linear-gradient(135deg,#1a1d27,#12152a);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-size:20px;font-weight:700;letter-spacing:-.5px;}.logo span{color:var(--accent);}
+.subtitle{color:var(--muted);font-size:12px;margin-top:2px;}
+.header-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;white-space:nowrap;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-primary:hover{opacity:.85;color:#fff;}
+.btn-green{background:#166534;border-color:#22c55e;color:#4ade80;}
+.btn-green:hover{background:#15803d;color:#fff;}
+.btn-danger{background:transparent;border-color:#5c1a1a;color:var(--red);}
+.btn-danger:hover{border-color:var(--red);}
 
-  header {
-    background: linear-gradient(135deg, #1a1d27 0%, #12152a 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 32px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  .subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+/* Upload */
+.upload-zone{margin:40px auto;max-width:680px;padding:0 24px;}
+.drop-area{border:2px dashed var(--border);border-radius:var(--radius);padding:44px 32px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface);}
+.drop-area:hover,.drop-area.dragging{border-color:var(--accent);background:#1e2236;}
+.drop-area .icon{font-size:38px;margin-bottom:12px;}
+.drop-area h3{font-size:16px;margin-bottom:6px;}
+.drop-area p{color:var(--muted);font-size:13px;}
+#fileInput{display:none;}
 
-  .upload-zone {
-    margin: 40px auto; max-width: 700px; padding: 0 24px;
-  }
-  .drop-area {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 48px 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface);
-  }
-  .drop-area:hover, .drop-area.dragging { border-color: var(--accent); background: #1e2236; }
-  .drop-area .icon { font-size: 40px; margin-bottom: 12px; }
-  .drop-area h3 { font-size: 16px; color: var(--text); margin-bottom: 6px; }
-  .drop-area p { color: var(--muted); font-size: 13px; }
-  .btn-upload {
-    margin-top: 16px; padding: 10px 24px; background: var(--accent);
-    color: #fff; border: none; border-radius: 6px; cursor: pointer;
-    font-size: 14px; font-weight: 600; transition: opacity 0.2s;
-  }
-  .btn-upload:hover { opacity: 0.85; }
-  #fileInput { display: none; }
+/* App layout */
+#app{display:none;padding:20px 28px;max-width:1440px;margin:0 auto;}
+.report-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.report-title{font-size:18px;font-weight:700;}
+.report-meta{color:var(--muted);font-size:12px;margin-top:3px;}
 
-  /* Main content */
-  #app { display: none; padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+/* Toolbar */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+.search-box{position:relative;flex:1;min-width:200px;}
+.search-box input{width:100%;padding:8px 12px 8px 36px;background:#12152a;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;}
+.search-box input:focus{border-color:var(--accent);}
+.search-box .s-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none;}
+.filter-select{padding:8px 12px;background:#12152a;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;cursor:pointer;outline:none;}
+.filter-select:focus{border-color:var(--accent);}
+.toolbar-sep{width:1px;height:28px;background:var(--border);}
 
-  .report-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 24px; flex-wrap: wrap; gap: 16px;
-  }
-  .report-title { font-size: 20px; font-weight: 700; }
-  .report-meta { color: var(--muted); font-size: 13px; margin-top: 4px; }
-  .btn-reset {
-    padding: 8px 18px; background: transparent; border: 1px solid var(--border);
-    color: var(--muted); border-radius: 6px; cursor: pointer; font-size: 13px;
-    transition: all 0.2s;
-  }
-  .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+/* Summary cards */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:all .2s;}
+.summary-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+.summary-card.active-filter{border-color:var(--accent);background:var(--surface2);}
+.summary-card .num{font-size:26px;font-weight:700;margin-bottom:3px;}
+.summary-card .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.card-green .num{color:var(--green);} .card-yellow .num{color:var(--yellow);}
+.card-orange .num{color:var(--orange);} .card-red .num{color:var(--red);}
+.card-blue .num{color:var(--accent);} .card-purple .num{color:var(--accent2);}
+.card-pink .num{color:var(--pink);} .card-cyan .num{color:var(--cyan);}
 
-  /* Summary cards */
-  .summary-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 14px; margin-bottom: 28px;
-  }
-  .summary-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; text-align: center;
-  }
-  .summary-card .num { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
-  .summary-card .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .card-green .num { color: var(--green); }
-  .card-yellow .num { color: var(--yellow); }
-  .card-orange .num { color: var(--orange); }
-  .card-red .num { color: var(--red); }
-  .card-blue .num { color: var(--accent); }
-  .card-purple .num { color: var(--accent2); }
+/* Section titles */
+.section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.section-title span{color:var(--accent);}
 
-  /* Employee tabs */
-  .section-title {
-    font-size: 14px; font-weight: 600; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 12px;
-  }
+/* Employee tabs */
+.employee-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px;}
+.emp-tab{padding:5px 13px;border-radius:18px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;}
+.emp-tab:hover{border-color:var(--accent);color:var(--accent);}
+.emp-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.emp-tab.has-anomaly{border-color:#7c3c00;color:var(--orange);}
+.emp-tab.has-anomaly.active{background:var(--orange);border-color:var(--orange);color:#fff;}
+.emp-tab.hidden{display:none;}
 
-  .employee-tabs {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
-  }
-  .emp-tab {
-    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
-    cursor: pointer; border: 1px solid var(--border); background: var(--surface);
-    color: var(--muted); transition: all 0.15s;
-  }
-  .emp-tab:hover { border-color: var(--accent); color: var(--accent); }
-  .emp-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .emp-tab.has-anomaly { border-color: var(--orange); color: var(--orange); }
-  .emp-tab.has-anomaly.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+/* Global anomaly table */
+.global-anom{margin-bottom:28px;}
+.anom-table-wrap{overflow-x:auto;}
+table.g-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--surface);border-radius:var(--radius);overflow:hidden;min-width:700px;}
+table.g-table th{background:#12152a;padding:9px 13px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+table.g-table th.sortable{cursor:pointer;user-select:none;}
+table.g-table th.sortable:hover{color:var(--accent);}
+table.g-table td{padding:8px 13px;border-bottom:1px solid #1a1e2e;vertical-align:middle;}
+table.g-table tr:last-child td{border-bottom:none;}
+table.g-table tr:hover td{background:#1c2035;}
+.emp-link{cursor:pointer;color:var(--accent);font-weight:600;}
+.emp-link:hover{text-decoration:underline;}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;}
+.badge-red{background:#3d0f0f;color:#f87171;border:1px solid #7f1d1d;}
+.badge-orange{background:#3d1f0a;color:#fb923c;border:1px solid #7c2d12;}
+.badge-yellow{background:#3d2e00;color:#fbbf24;border:1px solid #78350f;}
+.badge-blue{background:#0d2040;color:#60a5fa;border:1px solid #1e3a6e;}
+.badge-purple{background:#1e0f3d;color:#a78bfa;border:1px solid #4c1d95;}
+.badge-pink{background:#3d0f28;color:#f472b6;border:1px solid #831843;}
+.badge-cyan{background:#0a2d35;color:#22d3ee;border:1px solid #155e75;}
+.badge-green{background:#0f2d18;color:#4ade80;border:1px solid #14532d;}
+.clickable-row{cursor:pointer;}
+.clickable-row:hover td{background:#202540!important;}
+.ts-list{font-family:monospace;font-size:11px;display:flex;flex-wrap:wrap;gap:4px;}
+.ts-chip{padding:1px 6px;border-radius:4px;background:#12152a;border:1px solid var(--border);}
+.ts-chip.ts-flag{border-color:#7c2d12;background:#3d1f0a;color:#fb923c;}
+.ts-chip.ts-same{border-color:#7f1d1d;background:#3d0f0f;color:#f87171;}
 
-  /* Employee detail */
-  #employeeDetail { display: none; }
-  .emp-detail-header {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 24px;
-    margin-bottom: 20px; display: flex; align-items: center; gap: 20px;
-    flex-wrap: wrap;
-  }
-  .emp-avatar {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 700; flex-shrink: 0;
-  }
-  .emp-name { font-size: 20px; font-weight: 700; }
-  .emp-id { color: var(--muted); font-size: 13px; }
-  .emp-stats { margin-left: auto; display: flex; gap: 20px; flex-wrap: wrap; }
-  .emp-stat { text-align: center; }
-  .emp-stat .val { font-size: 20px; font-weight: 700; }
-  .emp-stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+/* Employee detail */
+#employeeDetail{display:none;}
+.emp-detail-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.emp-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0;}
+.emp-name{font-size:18px;font-weight:700;}.emp-id{color:var(--muted);font-size:12px;}
+.emp-stats{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap;}
+.emp-stat{text-align:center;}.emp-stat .val{font-size:18px;font-weight:700;}.emp-stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:2px;}
 
-  /* Anomaly chips */
-  .anomaly-bar {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
-  }
-  .chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 12px; border-radius: 16px; font-size: 12px; font-weight: 600;
-    border: 1px solid transparent;
-  }
-  .chip-ok { background: #1a2e1e; border-color: #2d5c34; color: var(--green); }
-  .chip-yellow { background: #2e2510; border-color: #5c4a1a; color: var(--yellow); }
-  .chip-orange { background: #2e1e0e; border-color: #5c3a1a; color: var(--orange); }
-  .chip-red { background: #2e0e0e; border-color: #5c1a1a; color: var(--red); }
-  .chip-purple { background: #1e1428; border-color: #4a2e7c; color: var(--accent2); }
+/* Calendar */
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.calendar-wrap{overflow-x:auto;margin-bottom:20px;}
+table.cal{width:100%;border-collapse:collapse;background:var(--surface);border-radius:var(--radius);overflow:hidden;font-size:12px;min-width:700px;}
+table.cal th{background:#12152a;padding:8px 6px;text-align:center;font-weight:600;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--border);}
+table.cal td{padding:4px 3px;text-align:center;border:1px solid #1e2133;vertical-align:top;min-width:68px;height:54px;cursor:pointer;transition:filter .15s;}
+table.cal td:hover{filter:brightness(1.3);}
+.day-num{font-size:9px;color:var(--muted);margin-bottom:2px;}
+.cell-entries{display:flex;flex-direction:column;gap:2px;align-items:center;}
+td.cell-normal{background:#0f1422;}
+td.cell-absent{background:#180c0c;}
+td.cell-solo{background:#1c1a0a;}
+td.cell-extra{background:#1a1008;}
+td.cell-same{background:#1e0a0a;}
+td.cell-short{background:#180e18;}
+td.cell-odd{background:#0a1a1e;}
+.time-pair{font-size:10px;font-weight:700;line-height:1.3;padding:1px 5px;border-radius:3px;white-space:nowrap;}
+.pair-normal{background:#0f2218;color:#4ade80;}
+.pair-extra{background:#3a2010;color:var(--orange);}
+.pair-same{background:#3d0f0f;color:#f87171;}
+.pair-short{background:#2d0f2d;color:#d946ef;}
+.solo-in{background:#0d1e35;color:#60a5fa;}
+.solo-out{background:#1a0d30;color:var(--accent2);}
+.absent-label{color:var(--muted);font-size:10px;font-style:italic;}
+.flag-dot{width:5px;height:5px;border-radius:50%;display:inline-block;margin-left:2px;}
 
-  /* Calendar table */
-  .calendar-wrap { overflow-x: auto; }
-  table.cal {
-    width: 100%; border-collapse: collapse;
-    background: var(--surface); border-radius: var(--radius); overflow: hidden;
-    font-size: 13px; min-width: 900px;
-  }
-  table.cal th {
-    background: #12152a; padding: 10px 8px; text-align: center;
-    font-weight: 600; color: var(--muted); font-size: 11px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-  }
-  table.cal td {
-    padding: 6px 5px; text-align: center; border: 1px solid #1e2133;
-    vertical-align: top; min-width: 64px; height: 56px;
-  }
-  .day-num { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
-  .cell-entries { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+/* Per-employee anomaly table */
+.anom-section{margin-top:20px;}
+table.anom-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--surface);border-radius:var(--radius);overflow:hidden;}
+table.anom-table th{background:#12152a;padding:9px 13px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}
+table.anom-table td{padding:8px 13px;border-bottom:1px solid #1a1e2e;}
+table.anom-table tr:last-child td{border-bottom:none;}
 
-  /* Cell states */
-  td.cell-normal { background: #1a1d27; }
-  td.cell-absent { background: #1c1010; }
-  td.cell-single-only { background: #1c1a0e; } /* only in or only out */
-  td.cell-extra { background: #1c1408; } /* 3+ entries / extra combos */
-  td.cell-multi-extra { background: #2a1008; } /* more than normal */
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;max-width:520px;width:100%;padding:24px;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+.modal-sub{color:var(--muted);font-size:12px;margin-bottom:18px;}
+.modal-section{margin-bottom:14px;}
+.modal-section-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.modal-entry-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#12152a;border-radius:6px;margin-bottom:6px;}
+.modal-entry-row .t-in{color:var(--green);font-weight:700;font-family:monospace;}
+.modal-entry-row .t-out{color:var(--red);font-weight:700;font-family:monospace;}
+.modal-entry-row .duration{color:var(--accent);font-size:11px;margin-left:auto;}
+.modal-flag{padding:6px 12px;border-radius:6px;font-size:12px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.modal-flag-red{background:#3d0f0f;color:#fca5a5;border:1px solid #7f1d1d;}
+.modal-flag-orange{background:#3d1f0a;color:#fdba74;border:1px solid #7c2d12;}
+.modal-flag-yellow{background:#3d2e00;color:#fde68a;border:1px solid #78350f;}
+.modal-flag-purple{background:#1e0f3d;color:#c4b5fd;border:1px solid #4c1d95;}
+.modal-flag-blue{background:#0d2040;color:#93c5fd;border:1px solid #1e3a6e;}
+.modal-flag-cyan{background:#0a2d35;color:#67e8f9;border:1px solid #155e75;}
 
-  .time-pair {
-    font-size: 11px; font-weight: 600; line-height: 1.3;
-    padding: 1px 6px; border-radius: 4px; white-space: nowrap;
-  }
-  .pair-normal { background: #1a2e20; color: #4ade80; }
-  .pair-extra { background: #3a2010; color: var(--orange); }
-  .solo-in { background: #1a2030; color: #60a5fa; }
-  .solo-out { background: #2a1a30; color: var(--accent2); }
-  .absent-label { color: var(--muted); font-size: 11px; font-style: italic; }
+/* No results */
+.no-results{padding:32px;text-align:center;color:var(--muted);font-size:14px;}
 
-  /* Anomaly summary table */
-  .anom-section { margin-top: 28px; }
-  table.anom-table {
-    width: 100%; border-collapse: collapse; font-size: 13px;
-    background: var(--surface); border-radius: var(--radius); overflow: hidden;
-  }
-  table.anom-table th {
-    background: #12152a; padding: 10px 14px; text-align: left;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--muted); border-bottom: 1px solid var(--border);
-  }
-  table.anom-table td { padding: 9px 14px; border-bottom: 1px solid #1e2133; }
-  table.anom-table tr:last-child td { border-bottom: none; }
-  table.anom-table tr:hover td { background: #1e2236; }
-  .severity-high { color: var(--red); font-weight: 600; }
-  .severity-med { color: var(--orange); font-weight: 600; }
-  .severity-low { color: var(--yellow); }
-
-  /* Global anomaly summary section */
-  .global-anom { margin-bottom: 32px; }
-  table.global-anom-table {
-    width: 100%; border-collapse: collapse; font-size: 13px;
-    background: var(--surface); border-radius: var(--radius); overflow: hidden;
-  }
-  table.global-anom-table th {
-    background: #12152a; padding: 10px 14px; text-align: left;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--muted); border-bottom: 1px solid var(--border);
-  }
-  table.global-anom-table td { padding: 9px 14px; border-bottom: 1px solid #1e2133; }
-  table.global-anom-table tr:last-child td { border-bottom: none; }
-  table.global-anom-table tr:hover td { background: #1e2236; }
-  .emp-link { cursor: pointer; color: var(--accent); font-weight: 600; }
-  .emp-link:hover { text-decoration: underline; }
-
-  .legend {
-    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
-    padding: 12px 16px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    font-size: 12px;
-  }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-  /* Progress bar */
-  .progress-bar {
-    height: 4px; background: var(--border); border-radius: 2px;
-    overflow: hidden; margin-top: 4px;
-  }
-  .progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-
-  @media (max-width: 700px) {
-    header { padding: 16px 16px; }
-    #app { padding: 16px; }
-    .emp-stats { gap: 12px; }
-  }
+@media(max-width:700px){header{padding:14px 16px;}#app{padding:14px 12px;}}
 </style>
 </head>
 <body>
@@ -246,7 +181,11 @@
 <header>
   <div>
     <div class="logo">ZTE <span>Attendance</span> Analyzer</div>
-    <div class="subtitle">Employee-wise attendance breakdown with anomaly detection</div>
+    <div class="subtitle">Employee-wise breakdown · Anomaly detection · Excel export</div>
+  </div>
+  <div class="header-btns" id="headerBtns" style="display:none;">
+    <button class="btn btn-green" onclick="downloadExcel()">⬇ Download Clean Excel</button>
+    <button class="btn btn-danger" onclick="resetApp()">✕ Reset</button>
   </div>
 </header>
 
@@ -254,9 +193,8 @@
   <div class="drop-area" id="dropArea">
     <div class="icon">📊</div>
     <h3>Upload ZTE Attendance Report (.xls / .xlsx)</h3>
-    <p>Drag & drop your file here, or click the button below</p>
-    <p style="margin-top:8px;font-size:12px;color:#4f8ef7;">Supports the "Att.log report" sheet format from ZTE machines</p>
-    <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Choose File</button>
+    <p>Drag & drop or click below — reads the "Att.log report" sheet</p>
+    <button class="btn btn-primary" style="margin-top:16px;" onclick="document.getElementById('fileInput').click()">Choose File</button>
     <input type="file" id="fileInput" accept=".xls,.xlsx">
   </div>
 </div>
@@ -264,26 +202,73 @@
 <div id="app">
   <div class="report-header">
     <div>
-      <div class="report-title" id="reportTitle">Attendance Report</div>
+      <div class="report-title" id="reportTitle"></div>
       <div class="report-meta" id="reportMeta"></div>
     </div>
-    <button class="btn-reset" onclick="resetApp()">← Upload Another File</button>
   </div>
 
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search employee name or ID…" oninput="applyFilters()">
+    </div>
+    <div class="toolbar-sep"></div>
+    <select class="filter-select" id="anomFilter" onchange="applyFilters()">
+      <option value="all">All Employees</option>
+      <option value="any-anomaly">Has Any Anomaly</option>
+      <option value="absent">Has Absences</option>
+      <option value="solo">Missing Punch</option>
+      <option value="extra">Extra Entries</option>
+      <option value="same-time">Same In/Out Time</option>
+      <option value="short-hours">Short Hours (&lt;4h)</option>
+      <option value="odd-time">Odd Timing</option>
+    </select>
+    <select class="filter-select" id="sortFilter" onchange="applyFilters()">
+      <option value="name">Sort: Name A–Z</option>
+      <option value="id">Sort: ID</option>
+      <option value="absent-desc">Sort: Most Absent</option>
+      <option value="anomaly-desc">Sort: Most Anomalies</option>
+      <option value="attendance-asc">Sort: Lowest Attendance</option>
+    </select>
+    <div class="toolbar-sep"></div>
+    <button class="btn" onclick="clearFilters()">Clear Filters</button>
+  </div>
+
+  <!-- Summary cards (clickable as filters) -->
   <div class="summary-grid" id="summaryGrid"></div>
 
+  <!-- Global anomaly table -->
   <div class="global-anom" id="globalAnomSection"></div>
 
-  <div class="section-title">Select Employee</div>
+  <!-- Employee tabs -->
+  <div class="section-title">Employees <span id="empCountLabel"></span></div>
   <div class="employee-tabs" id="employeeTabs"></div>
 
+  <!-- Employee detail -->
   <div id="employeeDetail"></div>
 </div>
 
-<!-- SheetJS -->
+<!-- Day detail modal -->
+<div class="modal-overlay" id="modalOverlay" style="display:none;" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// ─── Drag & drop ──────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// GLOBALS
+// ═══════════════════════════════════════════════════════════════════════════════
+let GLOBAL_DATA = null;
+let ACTIVE_EMP_ID = null;
+let ANOM_SORT = { col: 'day', dir: 1 };
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UPLOAD / DRAG-DROP
+// ═══════════════════════════════════════════════════════════════════════════════
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('fileInput');
 dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragging'); });
@@ -291,391 +276,715 @@ dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragging
 dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.classList.remove('dragging'); handleFile(e.dataTransfer.files[0]); });
 fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
 
-let GLOBAL_DATA = null;
-let TOTAL_DAYS = 0;
-
 function resetApp() {
-  GLOBAL_DATA = null;
+  GLOBAL_DATA = null; ACTIVE_EMP_ID = null;
   document.getElementById('uploadZone').style.display = '';
   document.getElementById('app').style.display = 'none';
+  document.getElementById('headerBtns').style.display = 'none';
   fileInput.value = '';
 }
 
-// ─── Time parsing ────────────────────────────────────────────────────────────
-// A cell value like "10:0718:13" contains timestamps concatenated without separator
-// Each timestamp is HH:MM (5 chars). We extract them as 5-char blocks.
+// ═══════════════════════════════════════════════════════════════════════════════
+// TIME UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════════
 function parseTimestamps(raw) {
-  if (!raw && raw !== 0) return [];
+  if (raw === null || raw === undefined || raw === '') return [];
   const s = String(raw).trim();
-  if (!s) return [];
-  // Match all HH:MM patterns
-  const matches = s.match(/\d{2}:\d{2}/g);
-  return matches ? matches : [];
+  return (s.match(/\d{2}:\d{2}/g) || []);
 }
 
-function toMinutes(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
-}
+function toMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+function minToHM(m) { const h=Math.floor(Math.abs(m)/60),mn=Math.abs(m)%60; return `${h}h ${mn}m`; }
 
-// Classify a set of timestamps for one day
-// Returns: { pairs: [{in, out}], soloIns: [], soloOuts: [], anomalyType, anomalyDesc }
+// Full classification of a day's timestamps
 function classifyDay(timestamps) {
-  if (!timestamps.length) return { pairs: [], soloIns: [], soloOuts: [], anomalyType: 'absent', anomalyDesc: 'Absent / No Record' };
+  if (!timestamps.length) return {
+    pairs:[], soloIns:[], soloOuts:[], flags:[],
+    anomalyType:'absent', anomalies:[], rawTs:[]
+  };
 
-  // Sort by time
-  const sorted = [...timestamps].sort((a, b) => toMinutes(a) - toMinutes(b));
+  const sorted = [...timestamps].sort((a,b)=>toMin(a)-toMin(b));
+  const pairs=[], soloIns=[], soloOuts=[];
 
-  // Pair them up greedily: first with last, next with second-last etc.
-  // But actually for attendance machines, odd entry = in, even = out
-  const pairs = [];
-  const soloIns = [], soloOuts = [];
-
-  // Attempt pairing: each consecutive pair is in/out
-  for (let i = 0; i < sorted.length - 1; i += 2) {
-    pairs.push({ in: sorted[i], out: sorted[i + 1] });
-  }
-  // Odd leftover
-  if (sorted.length % 2 !== 0) {
-    // Last single entry — could be solo-in or solo-out based on time
-    const last = sorted[sorted.length - 1];
-    if (toMinutes(last) < 14 * 60) soloIns.push(last);  // before 2pm = probably in
-    else soloOuts.push(last);
+  for (let i=0; i<sorted.length-1; i+=2)
+    pairs.push({ in:sorted[i], out:sorted[i+1] });
+  if (sorted.length%2!==0) {
+    const last=sorted[sorted.length-1];
+    if (toMin(last)<14*60) soloIns.push(last); else soloOuts.push(last);
   }
 
-  let anomalyType = 'normal';
-  let anomalyDesc = '';
+  const anomalies=[], flags=[];
 
-  if (pairs.length === 0 && (soloIns.length + soloOuts.length) > 0) {
-    anomalyType = 'solo';
-    anomalyDesc = soloIns.length ? 'Only check-in recorded (no check-out)' : 'Only check-out recorded (no check-in)';
-  } else if (pairs.length > 1) {
-    anomalyType = 'extra';
-    anomalyDesc = `${pairs.length} in/out combos (${timestamps.length} punches) — extra entries`;
-  } else if (pairs.length === 1 && timestamps.length > 2) {
-    anomalyType = 'extra';
-    anomalyDesc = `Extra punches (${timestamps.length} entries for 1 day)`;
+  // 1. Missing punch (odd entries)
+  if (soloIns.length+soloOuts.length>0) {
+    anomalies.push({type:'solo', label:'Missing Punch', severity:'orange',
+      desc: soloIns.length ? `Only check-in recorded (${soloIns[0]}) — no check-out` : `Only check-out recorded (${soloOuts[0]}) — no check-in`});
+    flags.push('solo');
   }
 
-  // Check for very early (before 7am) or very late (after 22:00) times → flag
-  for (const t of timestamps) {
-    const m = toMinutes(t);
-    if (m < 7 * 60 || m > 22 * 60) {
-      if (anomalyType === 'normal') anomalyType = 'odd-time';
-      anomalyDesc += (anomalyDesc ? ' | ' : '') + `Unusual time: ${t}`;
+  // 2. Extra combos (more than 1 pair)
+  if (pairs.length>1) {
+    anomalies.push({type:'extra', label:'Extra Entries', severity:'red',
+      desc:`${pairs.length} in/out combos in one day (${sorted.length} total punches)`});
+    flags.push('extra');
+  }
+
+  // 3. Same in/out time per pair
+  for (const p of pairs) {
+    if (p.in===p.out) {
+      anomalies.push({type:'same-time', label:'Same In & Out Time', severity:'red',
+        desc:`Check-in and check-out are identical: ${p.in}`});
+      flags.push('same-time');
     }
   }
 
-  if (anomalyType === 'normal') anomalyDesc = 'Normal';
+  // 4. Short duration (<4h)
+  for (const p of pairs) {
+    const dur=toMin(p.out)-toMin(p.in);
+    if (dur>0 && dur<240) {
+      anomalies.push({type:'short', label:'Short Hours', severity:'purple',
+        desc:`Only ${minToHM(dur)} between ${p.in} and ${p.out} (< 4 hours)`});
+      flags.push('short');
+    }
+    // Very short (<30 min) — strong flag
+    if (dur>0 && dur<30) {
+      anomalies.push({type:'very-short', label:'Very Short Stay', severity:'red',
+        desc:`Only ${minToHM(dur)} — likely a tap error (${p.in}→${p.out})`});
+    }
+  }
 
-  return { pairs, soloIns, soloOuts, anomalyType, anomalyDesc };
+  // 5. Out before in
+  for (const p of pairs) {
+    const dur=toMin(p.out)-toMin(p.in);
+    if (dur<0) {
+      anomalies.push({type:'reversed', label:'Out Before In', severity:'red',
+        desc:`Check-out (${p.out}) is earlier than check-in (${p.in})`});
+      flags.push('reversed');
+    }
+  }
+
+  // 6. Odd timings (before 7am or after 10:30pm)
+  for (const t of sorted) {
+    const m=toMin(t);
+    if (m < 7*60) {
+      anomalies.push({type:'odd-time', label:'Very Early Entry', severity:'cyan',
+        desc:`Punch at ${t} — before 7:00 AM`});
+      if(!flags.includes('odd-time')) flags.push('odd-time');
+    }
+    if (m > 22*60+30) {
+      anomalies.push({type:'odd-time', label:'Very Late Exit', severity:'cyan',
+        desc:`Punch at ${t} — after 10:30 PM`});
+      if(!flags.includes('odd-time')) flags.push('odd-time');
+    }
+  }
+
+  // 7. Multiple same-value punches
+  const tsFreq={};
+  for (const t of sorted) tsFreq[t]=(tsFreq[t]||0)+1;
+  for (const [t,cnt] of Object.entries(tsFreq)) {
+    if (cnt>1) {
+      anomalies.push({type:'duplicate', label:'Duplicate Punch', severity:'orange',
+        desc:`Timestamp ${t} appears ${cnt} times`});
+      if(!flags.includes('duplicate')) flags.push('duplicate');
+    }
+  }
+
+  let anomalyType='normal';
+  if (flags.includes('same-time')) anomalyType='same-time';
+  else if (flags.includes('reversed')) anomalyType='reversed';
+  else if (flags.includes('extra')) anomalyType='extra';
+  else if (flags.includes('short')) anomalyType='short';
+  else if (flags.includes('solo')) anomalyType='solo';
+  else if (flags.includes('odd-time')) anomalyType='odd';
+  else if (flags.includes('duplicate')) anomalyType='duplicate';
+
+  return { pairs, soloIns, soloOuts, flags, anomalyType, anomalies, rawTs:sorted };
 }
 
-// ─── Main file handler ────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// FILE PARSING
+// ═══════════════════════════════════════════════════════════════════════════════
 function handleFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
     try {
-      const wb = XLSX.read(e.target.result, { type: 'binary' });
-      // Find the Att.log report sheet (case-insensitive)
-      const sheetName = wb.SheetNames.find(n => n.toLowerCase().replace(/\s/g, '').includes('att.log') || n.toLowerCase().includes('att.log'));
-      if (!sheetName) {
-        alert('Could not find "Att.log report" sheet. Available sheets: ' + wb.SheetNames.join(', '));
-        return;
-      }
-      const ws = wb.Sheets[sheetName];
-      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+      const wb=XLSX.read(e.target.result,{type:'binary'});
+      const sheetName=wb.SheetNames.find(n=>n.toLowerCase().replace(/[\s.]/g,'').includes('attlog')||n.toLowerCase().includes('att.log'));
+      if(!sheetName){ alert('Cannot find "Att.log report" sheet. Available: '+wb.SheetNames.join(', ')); return; }
+      const ws=wb.Sheets[sheetName];
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null});
       parseAndRender(raw, file.name);
-    } catch (err) {
-      alert('Error reading file: ' + err.message);
-    }
+    } catch(err){ alert('Error reading file: '+err.message); }
   };
   reader.readAsBinaryString(file);
 }
 
 function parseAndRender(rows, filename) {
-  // Row 0: title, Row 2: date range, Row 3: day numbers (1-30)
-  // Then alternating ID row / data row pairs
+  let dateRange='';
+  const row2=rows[2]||[];
+  for(const v of row2) if(v&&String(v).includes('~')){ dateRange=String(v); break; }
 
-  // Extract date range from row index 2
-  let dateRange = '';
-  const row2 = rows[2] || [];
-  for (const v of row2) {
-    if (v && String(v).includes('~')) { dateRange = String(v); break; }
+  const dayRow=rows[3]||[];
+  const colToDay={};
+  for(let c=0;c<dayRow.length;c++){
+    const v=dayRow[c];
+    if(v!==null&&v!==undefined&&!isNaN(Number(v))) colToDay[c]=Math.round(Number(v));
   }
+  const totalDays=Math.max(...Object.values(colToDay),1);
 
-  // Day-column map: row 3 has day numbers 1..30 across 30 columns
-  const dayRow = rows[3] || [];
-  const colToDay = {}; // colIndex -> dayNumber
-  for (let c = 0; c < dayRow.length; c++) {
-    const v = dayRow[c];
-    if (v !== null && v !== undefined && !isNaN(Number(v))) {
-      colToDay[c] = Math.round(Number(v));
-    }
-  }
-  TOTAL_DAYS = Math.max(...Object.values(colToDay), 1);
-
-  // Parse employees
-  const employees = [];
-  let i = 4; // start after header rows
-  while (i < rows.length) {
-    const row = rows[i];
-    if (!row) { i++; continue; }
-
-    // ID row pattern: row[0]='ID:' and row[8]='Name:'
-    if (row[0] === 'ID:' || (typeof row[0] === 'string' && row[0].trim() === 'ID:')) {
-      const empId = row[2] != null ? String(row[2]).trim() : '?';
-      const empName = row[10] != null ? String(row[10]).trim() : 'Unknown';
-      const dept = row[20] != null ? String(row[20]).trim() : '';
-
-      // Next row is the data row
-      const dataRow = rows[i + 1] || [];
-      const days = {};
-      for (let c = 0; c < dataRow.length; c++) {
-        if (colToDay[c] !== undefined) {
-          const val = dataRow[c];
-          const ts = parseTimestamps(val);
-          days[colToDay[c]] = { raw: val, timestamps: ts, ...classifyDay(ts) };
+  const employees=[];
+  let i=4;
+  while(i<rows.length){
+    const row=rows[i];
+    if(!row){i++;continue;}
+    if(row[0]==='ID:'||(typeof row[0]==='string'&&row[0].trim()==='ID:')){
+      const empId=row[2]!=null?String(row[2]).trim():'?';
+      const empName=row[10]!=null?String(row[10]).trim():'Unknown';
+      const dept=row[20]!=null?String(row[20]).trim():'';
+      const dataRow=rows[i+1]||[];
+      const days={};
+      for(let c=0;c<dataRow.length;c++){
+        if(colToDay[c]!==undefined){
+          const val=dataRow[c];
+          const ts=parseTimestamps(val);
+          days[colToDay[c]]={raw:val,timestamps:ts,...classifyDay(ts)};
         }
       }
-
-      employees.push({ id: empId, name: empName, dept, days });
-      i += 2;
-    } else {
-      i++;
-    }
+      employees.push({id:empId,name:empName,dept,days});
+      i+=2;
+    } else i++;
   }
 
-  GLOBAL_DATA = { employees, dateRange, filename, totalDays: TOTAL_DAYS };
+  GLOBAL_DATA={employees,dateRange,filename,totalDays};
   renderApp();
 }
 
-// ─── Rendering ────────────────────────────────────────────────────────────────
-function renderApp() {
-  const { employees, dateRange, filename, totalDays } = GLOBAL_DATA;
+// ═══════════════════════════════════════════════════════════════════════════════
+// RENDER APP
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderApp(){
+  const {employees,dateRange,filename,totalDays}=GLOBAL_DATA;
+  document.getElementById('uploadZone').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('headerBtns').style.display='flex';
+  document.getElementById('reportTitle').textContent=`Attendance Report — ${employees.length} Employees`;
+  document.getElementById('reportMeta').textContent=`File: ${filename}  ·  Period: ${dateRange}  ·  ${totalDays} working days`;
 
-  document.getElementById('uploadZone').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('reportTitle').textContent = `Attendance Report — ${employees.length} Employees`;
-  document.getElementById('reportMeta').textContent = `File: ${filename}  |  Period: ${dateRange}  |  ${totalDays} days`;
-
-  // Global stats
-  let totalPresent = 0, totalAbsent = 0, totalSolo = 0, totalExtra = 0, totalOddTime = 0;
-  for (const emp of employees) {
-    for (let d = 1; d <= totalDays; d++) {
-      const day = emp.days[d];
-      if (!day || day.anomalyType === 'absent') totalAbsent++;
-      else totalPresent++;
-      if (day && day.anomalyType === 'solo') totalSolo++;
-      if (day && day.anomalyType === 'extra') totalExtra++;
-      if (day && day.anomalyType === 'odd-time') totalOddTime++;
-    }
-  }
-
-  document.getElementById('summaryGrid').innerHTML = `
-    <div class="summary-card card-blue"><div class="num">${employees.length}</div><div class="label">Employees</div></div>
-    <div class="summary-card card-green"><div class="num">${totalPresent}</div><div class="label">Present Days</div></div>
-    <div class="summary-card card-red"><div class="num">${totalAbsent}</div><div class="label">Absent Days</div></div>
-    <div class="summary-card card-yellow"><div class="num">${totalSolo}</div><div class="label">Missing Punch</div></div>
-    <div class="summary-card card-orange"><div class="num">${totalExtra}</div><div class="label">Extra Entries</div></div>
-    <div class="summary-card card-purple"><div class="num">${totalOddTime}</div><div class="label">Odd Timings</div></div>
-  `;
-
+  renderSummaryCards();
   renderGlobalAnomalyTable();
-  renderEmployeeTabs();
+  applyFilters();
 }
 
-function renderGlobalAnomalyTable() {
-  const { employees, totalDays } = GLOBAL_DATA;
-  const rows = [];
+function renderSummaryCards(){
+  const {employees,totalDays}=GLOBAL_DATA;
+  let totalPresent=0,totalAbsent=0,totalSolo=0,totalExtra=0,totalSame=0,totalShort=0,totalOdd=0,totalDup=0;
+  for(const emp of employees){
+    for(let d=1;d<=totalDays;d++){
+      const day=emp.days[d];
+      if(!day||day.anomalyType==='absent') totalAbsent++;
+      else totalPresent++;
+      if(day&&day.flags){
+        if(day.flags.includes('solo')) totalSolo++;
+        if(day.flags.includes('extra')) totalExtra++;
+        if(day.flags.includes('same-time')) totalSame++;
+        if(day.flags.includes('short')) totalShort++;
+        if(day.flags.includes('odd-time')) totalOdd++;
+        if(day.flags.includes('duplicate')) totalDup++;
+      }
+    }
+  }
+  document.getElementById('summaryGrid').innerHTML=`
+    <div class="summary-card card-blue" onclick="cardFilter('all')"><div class="num">${employees.length}</div><div class="label">Employees</div></div>
+    <div class="summary-card card-green" onclick="cardFilter('all')"><div class="num">${totalPresent}</div><div class="label">Present Days</div></div>
+    <div class="summary-card card-red" onclick="cardFilter('absent')"><div class="num">${totalAbsent}</div><div class="label">Absent Days</div></div>
+    <div class="summary-card card-yellow" onclick="cardFilter('solo')"><div class="num">${totalSolo}</div><div class="label">Missing Punch</div></div>
+    <div class="summary-card card-orange" onclick="cardFilter('extra')"><div class="num">${totalExtra}</div><div class="label">Extra Entries</div></div>
+    <div class="summary-card card-red" onclick="cardFilter('same-time')"><div class="num">${totalSame}</div><div class="label">Same In/Out Time</div></div>
+    <div class="summary-card card-purple" onclick="cardFilter('short')"><div class="num">${totalShort}</div><div class="label">Short Hours</div></div>
+    <div class="summary-card card-cyan" onclick="cardFilter('odd-time')"><div class="num">${totalOdd}</div><div class="label">Odd Timings</div></div>
+  `;
+}
 
-  for (const emp of employees) {
-    for (let d = 1; d <= totalDays; d++) {
-      const day = emp.days[d];
-      if (!day || day.anomalyType === 'normal' || day.anomalyType === 'absent') continue;
-      rows.push({ emp, day: d, ...day });
+function cardFilter(type){
+  document.getElementById('anomFilter').value=type==='all'?'all':type;
+  applyFilters();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GLOBAL ANOMALY TABLE
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderGlobalAnomalyTable(filterEmpIds=null){
+  const {employees,totalDays}=GLOBAL_DATA;
+  let rows=[];
+
+  for(const emp of employees){
+    if(filterEmpIds && !filterEmpIds.includes(emp.id)) continue;
+    for(let d=1;d<=totalDays;d++){
+      const day=emp.days[d];
+      if(!day||!day.anomalies||!day.anomalies.length) continue;
+      for(const anom of day.anomalies){
+        rows.push({emp,day:d,anom,timestamps:day.rawTs||day.timestamps||[]});
+      }
     }
   }
 
-  if (!rows.length) {
-    document.getElementById('globalAnomSection').innerHTML = '<p style="color:var(--green);margin-bottom:24px;">✓ No anomalies detected across all employees.</p>';
+  if(!rows.length){
+    document.getElementById('globalAnomSection').innerHTML='<p style="color:var(--green);margin-bottom:24px;font-size:13px;">✓ No anomalies in current selection.</p>';
     return;
   }
 
-  const typeLabel = { solo: '⚠️ Missing Punch', extra: '🔴 Extra Entries', 'odd-time': '🟡 Odd Timing' };
-  const typeSev = { solo: 'severity-med', extra: 'severity-high', 'odd-time': 'severity-low' };
+  // Sort
+  rows.sort((a,b)=>{
+    if(ANOM_SORT.col==='emp') return ANOM_SORT.dir*(a.emp.name.localeCompare(b.emp.name));
+    if(ANOM_SORT.col==='day') return ANOM_SORT.dir*(a.day-b.day);
+    if(ANOM_SORT.col==='type') return ANOM_SORT.dir*(a.anom.label.localeCompare(b.anom.label));
+    return 0;
+  });
 
-  let html = `
-    <div class="section-title">All Anomalies Summary (${rows.length} records)</div>
-    <table class="global-anom-table">
-      <thead><tr>
-        <th>Employee</th><th>ID</th><th>Day</th><th>Type</th><th>Detail</th><th>Timestamps</th>
-      </tr></thead><tbody>`;
+  const sevBadge={red:'badge-red',orange:'badge-orange',yellow:'badge-yellow',purple:'badge-purple',blue:'badge-blue',cyan:'badge-cyan',green:'badge-green'};
+  
+  let html=`
+    <div class="section-title">All Anomaly Records <span>(${rows.length})</span>
+      <small style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click any row to see full day detail</small>
+    </div>
+    <div class="anom-table-wrap">
+    <table class="g-table"><thead><tr>
+      <th class="sortable" onclick="sortAnom('emp')">Employee ↕</th>
+      <th>ID</th>
+      <th class="sortable" onclick="sortAnom('day')">Day ↕</th>
+      <th class="sortable" onclick="sortAnom('type')">Anomaly ↕</th>
+      <th>Description</th>
+      <th>Timestamps</th>
+    </tr></thead><tbody>`;
 
-  for (const r of rows) {
-    html += `<tr>
-      <td><span class="emp-link" onclick="selectEmployee('${r.emp.id}')">${r.emp.name}</span></td>
-      <td>${r.emp.id}</td>
-      <td>Day ${r.day}</td>
-      <td class="${typeSev[r.anomalyType]}">${typeLabel[r.anomalyType] || r.anomalyType}</td>
-      <td>${r.anomalyDesc}</td>
-      <td style="font-family:monospace;font-size:12px;">${r.timestamps.join(', ') || '—'}</td>
+  for(const r of rows){
+    const bc=sevBadge[r.anom.severity]||'badge-orange';
+    const tsHtml=r.timestamps.map(t=>{
+      let cls='ts-chip';
+      if(r.anom.type==='same-time'&&t===r.anom.desc.match(/\d{2}:\d{2}/)?.[0]) cls+=' ts-same';
+      else if(toMin(t)<7*60||toMin(t)>22*60+30) cls+=' ts-flag';
+      return `<span class="${cls}">${t}</span>`;
+    }).join('');
+
+    html+=`<tr class="clickable-row" onclick="openDayModal('${r.emp.id}',${r.day})">
+      <td><span class="emp-link" onclick="event.stopPropagation();selectEmployee('${r.emp.id}')">${r.emp.name}</span></td>
+      <td style="color:var(--muted)">${r.emp.id}</td>
+      <td>Day <strong>${r.day}</strong></td>
+      <td><span class="badge ${bc}">${r.anom.label}</span></td>
+      <td style="font-size:12px;">${r.anom.desc}</td>
+      <td><div class="ts-list">${tsHtml||'—'}</div></td>
     </tr>`;
   }
-  html += '</tbody></table>';
-
-  document.getElementById('globalAnomSection').innerHTML = html;
+  html+='</tbody></table></div>';
+  document.getElementById('globalAnomSection').innerHTML=html;
 }
 
-function renderEmployeeTabs() {
-  const { employees, totalDays } = GLOBAL_DATA;
-  const tabsEl = document.getElementById('employeeTabs');
-  tabsEl.innerHTML = '';
+function sortAnom(col){
+  if(ANOM_SORT.col===col) ANOM_SORT.dir*=-1;
+  else { ANOM_SORT.col=col; ANOM_SORT.dir=1; }
+  renderGlobalAnomalyTable(getFilteredEmpIds());
+}
 
-  for (const emp of employees) {
-    let hasAnom = false;
-    for (let d = 1; d <= totalDays; d++) {
-      const day = emp.days[d];
-      if (day && day.anomalyType !== 'normal' && day.anomalyType !== 'absent') { hasAnom = true; break; }
+// ═══════════════════════════════════════════════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════════════════════════════════════════════
+function getFilteredEmpIds(){
+  const {employees,totalDays}=GLOBAL_DATA;
+  const search=document.getElementById('searchInput').value.trim().toLowerCase();
+  const anomF=document.getElementById('anomFilter').value;
+  const sortF=document.getElementById('sortFilter').value;
+
+  let list=[...employees];
+
+  // Search filter
+  if(search) list=list.filter(e=>e.name.toLowerCase().includes(search)||e.id.toLowerCase().includes(search));
+
+  // Anomaly filter
+  if(anomF!=='all'){
+    list=list.filter(emp=>{
+      for(let d=1;d<=totalDays;d++){
+        const day=emp.days[d];
+        if(!day) continue;
+        if(anomF==='absent'&&day.anomalyType==='absent') return true;
+        if(anomF==='any-anomaly'&&day.anomalyType!=='absent'&&day.anomalyType!=='normal') return true;
+        if(day.flags&&day.flags.includes(anomF)) return true;
+        if(anomF==='same-time'&&day.flags&&day.flags.includes('same-time')) return true;
+        if(anomF==='short-hours'&&day.flags&&day.flags.includes('short')) return true;
+      }
+      return false;
+    });
+  }
+
+  // Sort
+  list.sort((a,b)=>{
+    if(sortF==='name') return a.name.localeCompare(b.name);
+    if(sortF==='id') return Number(a.id)-Number(b.id);
+    if(sortF==='absent-desc'){
+      const ca=[...Array(totalDays+1).keys()].slice(1).filter(d=>!a.days[d]||a.days[d].anomalyType==='absent').length;
+      const cb=[...Array(totalDays+1).keys()].slice(1).filter(d=>!b.days[d]||b.days[d].anomalyType==='absent').length;
+      return cb-ca;
     }
-    const tab = document.createElement('div');
-    tab.className = 'emp-tab' + (hasAnom ? ' has-anomaly' : '');
-    tab.textContent = emp.name;
-    tab.dataset.empId = emp.id;
-    tab.onclick = () => selectEmployee(emp.id);
+    if(sortF==='anomaly-desc'){
+      const ca=[...Array(totalDays+1).keys()].slice(1).reduce((s,d)=>s+(a.days[d]?.anomalies?.length||0),0);
+      const cb=[...Array(totalDays+1).keys()].slice(1).reduce((s,d)=>s+(b.days[d]?.anomalies?.length||0),0);
+      return cb-ca;
+    }
+    if(sortF==='attendance-asc'){
+      const ca=[...Array(totalDays+1).keys()].slice(1).filter(d=>a.days[d]&&a.days[d].anomalyType!=='absent').length;
+      const cb=[...Array(totalDays+1).keys()].slice(1).filter(d=>b.days[d]&&b.days[d].anomalyType!=='absent').length;
+      return ca-cb;
+    }
+    return 0;
+  });
+
+  return list.map(e=>e.id);
+}
+
+function applyFilters(){
+  const filteredIds=getFilteredEmpIds();
+  document.getElementById('empCountLabel').textContent=`(${filteredIds.length} shown)`;
+
+  document.querySelectorAll('.emp-tab').forEach(t=>{
+    t.classList.toggle('hidden', !filteredIds.includes(t.dataset.empId));
+  });
+
+  renderGlobalAnomalyTable(filteredIds);
+}
+
+function clearFilters(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('anomFilter').value='all';
+  document.getElementById('sortFilter').value='name';
+  applyFilters();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EMPLOYEE TABS
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderEmployeeTabs(){
+  const {employees,totalDays}=GLOBAL_DATA;
+  const tabsEl=document.getElementById('employeeTabs');
+  tabsEl.innerHTML='';
+  for(const emp of employees){
+    let hasAnom=false;
+    for(let d=1;d<=totalDays;d++){
+      const day=emp.days[d];
+      if(day&&day.anomalyType!=='normal'&&day.anomalyType!=='absent'){hasAnom=true;break;}
+    }
+    const tab=document.createElement('div');
+    tab.className='emp-tab'+(hasAnom?' has-anomaly':'');
+    tab.textContent=`${emp.name} (${emp.id})`;
+    tab.dataset.empId=emp.id;
+    tab.onclick=()=>selectEmployee(emp.id);
     tabsEl.appendChild(tab);
   }
 }
 
-function selectEmployee(empId) {
-  // Highlight tab
-  document.querySelectorAll('.emp-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.empId === empId);
-  });
+// ═══════════════════════════════════════════════════════════════════════════════
+// EMPLOYEE DETAIL
+// ═══════════════════════════════════════════════════════════════════════════════
+function selectEmployee(empId){
+  ACTIVE_EMP_ID=empId;
+  document.querySelectorAll('.emp-tab').forEach(t=>t.classList.toggle('active',t.dataset.empId===empId));
+  const emp=GLOBAL_DATA.employees.find(e=>e.id===empId);
+  if(!emp) return;
+  const {totalDays}=GLOBAL_DATA;
 
-  const emp = GLOBAL_DATA.employees.find(e => e.id === empId);
-  if (!emp) return;
-
-  const { totalDays } = GLOBAL_DATA;
-  const detailEl = document.getElementById('employeeDetail');
-  detailEl.style.display = 'block';
-
-  // Stats
-  let presentDays = 0, absentDays = 0, soloCount = 0, extraCount = 0, oddCount = 0;
-  for (let d = 1; d <= totalDays; d++) {
-    const day = emp.days[d];
-    if (!day || day.anomalyType === 'absent') absentDays++;
+  let presentDays=0,absentDays=0,anomCounts={solo:0,extra:0,'same-time':0,short:0,'odd-time':0,duplicate:0};
+  let totalAnomDays=0;
+  for(let d=1;d<=totalDays;d++){
+    const day=emp.days[d];
+    if(!day||day.anomalyType==='absent') absentDays++;
     else presentDays++;
-    if (day && day.anomalyType === 'solo') soloCount++;
-    if (day && day.anomalyType === 'extra') extraCount++;
-    if (day && day.anomalyType === 'odd-time') oddCount++;
+    if(day&&day.flags) for(const f of day.flags){ anomCounts[f]=(anomCounts[f]||0)+1; }
+    if(day&&day.anomalies&&day.anomalies.length) totalAnomDays++;
   }
-  const attendancePct = Math.round((presentDays / totalDays) * 100);
+  const pct=Math.round((presentDays/totalDays)*100);
+  const pctColor=pct>80?'var(--green)':pct>60?'var(--yellow)':'var(--red)';
 
-  // Build calendar table: 7 cols per row (Mon-Sun style but we just do 7-per-row for space)
-  const COLS = 7;
-  let calRows = '';
-  let d = 1;
-  while (d <= totalDays) {
-    calRows += '<tr>';
-    for (let c = 0; c < COLS; c++, d++) {
-      if (d > totalDays) { calRows += '<td></td>'; continue; }
-      const day = emp.days[d] || { timestamps: [], pairs: [], soloIns: [], soloOuts: [], anomalyType: 'absent', anomalyDesc: 'No Record' };
+  // Calendar
+  const COLS=10;
+  let calRows='', d=1;
+  while(d<=totalDays){
+    calRows+='<tr>';
+    for(let c=0;c<COLS;c++,d++){
+      if(d>totalDays){calRows+='<td></td>';continue;}
+      const day=emp.days[d]||{timestamps:[],pairs:[],soloIns:[],soloOuts:[],flags:[],anomalyType:'absent',anomalies:[]};
+      const cellClsMap={'absent':'cell-absent','solo':'cell-solo','extra':'cell-extra','same-time':'cell-same','short':'cell-short','reversed':'cell-same','odd':'cell-odd','duplicate':'cell-solo','normal':'cell-normal'};
+      const cellCls=cellClsMap[day.anomalyType]||'cell-normal';
 
-      let cellClass = 'cell-normal';
-      if (day.anomalyType === 'absent') cellClass = 'cell-absent';
-      else if (day.anomalyType === 'solo') cellClass = 'cell-single-only';
-      else if (day.anomalyType === 'extra') cellClass = 'cell-extra';
-      else if (day.anomalyType === 'odd-time') cellClass = 'cell-extra';
-
-      let entries = `<div class="day-num">${d}</div><div class="cell-entries">`;
-
-      if (day.anomalyType === 'absent') {
-        entries += `<span class="absent-label">—</span>`;
+      let entries=`<div class="day-num">${d}</div><div class="cell-entries">`;
+      if(day.anomalyType==='absent'){
+        entries+=`<span class="absent-label">—</span>`;
       } else {
-        // Normal pairs
-        for (let p = 0; p < day.pairs.length; p++) {
-          const cls = p === 0 ? 'pair-normal' : 'pair-extra';
-          entries += `<span class="time-pair ${cls}">${day.pairs[p].in}<br>${day.pairs[p].out}</span>`;
+        for(let p=0;p<day.pairs.length;p++){
+          const pr=day.pairs[p];
+          let pairCls='pair-normal';
+          if(pr.in===pr.out) pairCls='pair-same';
+          else if((toMin(pr.out)-toMin(pr.in))<240&&(toMin(pr.out)-toMin(pr.in))>0) pairCls='pair-short';
+          if(p>0) pairCls='pair-extra';
+          entries+=`<span class="time-pair ${pairCls}">${pr.in}↕${pr.out}</span>`;
         }
-        for (const t of day.soloIns) entries += `<span class="time-pair solo-in">↑ ${t}</span>`;
-        for (const t of day.soloOuts) entries += `<span class="time-pair solo-out">↓ ${t}</span>`;
+        for(const t of day.soloIns) entries+=`<span class="time-pair solo-in">↑${t}</span>`;
+        for(const t of day.soloOuts) entries+=`<span class="time-pair solo-out">↓${t}</span>`;
+        if(day.anomalies.length) entries+=`<span style="font-size:8px;color:var(--orange);">⚠ ${day.anomalies.length}</span>`;
       }
-      entries += '</div>';
-
-      const tooltip = day.anomalyDesc !== 'Normal' ? ` title="${day.anomalyDesc}"` : '';
-      calRows += `<td class="${cellClass}"${tooltip}>${entries}</td>`;
+      entries+='</div>';
+      calRows+=`<td class="${cellCls}" onclick="openDayModal('${emp.id}',${d})" title="Day ${d} — click for detail">${entries}</td>`;
     }
-    calRows += '</tr>';
+    calRows+='</tr>';
   }
 
-  // Anomaly detail table
-  let anomRows = '';
-  for (let day = 1; day <= totalDays; day++) {
-    const d2 = emp.days[day];
-    if (!d2 || d2.anomalyType === 'normal' || d2.anomalyType === 'absent') continue;
-    const typeMap = { solo: ['⚠️ Missing Punch', 'severity-med'], extra: ['🔴 Extra Entries', 'severity-high'], 'odd-time': ['🟡 Odd Timing', 'severity-low'] };
-    const [label, cls] = typeMap[d2.anomalyType] || [d2.anomalyType, ''];
-    anomRows += `<tr>
-      <td>Day ${day}</td>
-      <td class="${cls}">${label}</td>
-      <td>${d2.anomalyDesc}</td>
-      <td style="font-family:monospace;">${d2.timestamps.join(', ') || '—'}</td>
+  // Per-employee anomaly table
+  let anomRows='';
+  for(let dy=1;dy<=totalDays;dy++){
+    const day=emp.days[dy];
+    if(!day||!day.anomalies||!day.anomalies.length) continue;
+    const sevBadge={red:'badge-red',orange:'badge-orange',yellow:'badge-yellow',purple:'badge-purple',blue:'badge-blue',cyan:'badge-cyan'};
+    anomRows+=`<tr class="clickable-row" onclick="openDayModal('${emp.id}',${dy})">
+      <td>Day <strong>${dy}</strong></td>
+      <td><div class="ts-list">${(day.rawTs||day.timestamps||[]).map(t=>`<span class="ts-chip">${t}</span>`).join('')}</div></td>
+      <td>${day.anomalies.map(a=>`<span class="badge ${sevBadge[a.severity]||'badge-orange'}" style="margin:2px;">${a.label}</span>`).join('')}</td>
+      <td style="font-size:12px;color:var(--muted);">${day.anomalies.map(a=>a.desc).join('<br>')}</td>
     </tr>`;
   }
 
-  detailEl.innerHTML = `
+  const detailEl=document.getElementById('employeeDetail');
+  detailEl.style.display='block';
+  detailEl.innerHTML=`
     <div class="emp-detail-header">
       <div class="emp-avatar">${emp.name.charAt(0).toUpperCase()}</div>
       <div>
         <div class="emp-name">${emp.name}</div>
-        <div class="emp-id">ID: ${emp.id}  ·  Dept: ${emp.dept || 'N/A'}</div>
+        <div class="emp-id">ID: ${emp.id}  ·  Dept: ${emp.dept||'N/A'}</div>
         <div style="margin-top:8px;">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:3px;">Attendance Rate</div>
-          <div class="progress-bar" style="width:180px;">
-            <div class="progress-fill" style="width:${attendancePct}%;background:${attendancePct > 75 ? 'var(--green)' : attendancePct > 50 ? 'var(--yellow)' : 'var(--red)'};"></div>
-          </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px;">${attendancePct}% (${presentDays}/${totalDays} days)</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Attendance Rate</div>
+          <div class="progress-bar" style="width:160px;"><div class="progress-fill" style="width:${pct}%;background:${pctColor};"></div></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;">${pct}% · ${presentDays}/${totalDays} days present</div>
         </div>
       </div>
       <div class="emp-stats">
         <div class="emp-stat"><div class="val" style="color:var(--green)">${presentDays}</div><div class="lbl">Present</div></div>
         <div class="emp-stat"><div class="val" style="color:var(--red)">${absentDays}</div><div class="lbl">Absent</div></div>
-        <div class="emp-stat"><div class="val" style="color:var(--yellow)">${soloCount}</div><div class="lbl">Missing Punch</div></div>
-        <div class="emp-stat"><div class="val" style="color:var(--orange)">${extraCount}</div><div class="lbl">Extra Entries</div></div>
-        <div class="emp-stat"><div class="val" style="color:var(--accent2)">${oddCount}</div><div class="lbl">Odd Timings</div></div>
+        <div class="emp-stat"><div class="val" style="color:var(--orange)">${totalAnomDays}</div><div class="lbl">Anom. Days</div></div>
+        <div class="emp-stat"><div class="val" style="color:var(--yellow)">${anomCounts.solo||0}</div><div class="lbl">Miss Punch</div></div>
+        <div class="emp-stat"><div class="val" style="color:var(--red)">${anomCounts.extra||0}</div><div class="lbl">Extra</div></div>
+        <div class="emp-stat"><div class="val" style="color:#f87171">${anomCounts['same-time']||0}</div><div class="lbl">Same T</div></div>
+        <div class="emp-stat"><div class="val" style="color:var(--accent2)">${anomCounts.short||0}</div><div class="lbl">&lt;4h Days</div></div>
       </div>
     </div>
 
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#1a2e20;border:1px solid #2d5c34"></div> Normal In/Out</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#1c1a0e;border:1px solid #5c4a1a"></div> Missing Punch (solo entry)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#1c1408;border:1px solid #5c3a1a"></div> Extra Entries (3+ punches)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#1c1010;border:1px solid #4a1a1a"></div> Absent</div>
-      <div class="legend-item"><div class="time-pair pair-extra" style="font-size:10px;">2nd combo</div> Extra In/Out combo highlighted orange</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0f2218;border:1px solid #166534"></div> Normal</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#180c0c;border:1px solid #7f1d1d"></div> Absent</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1c1a0a;border:1px solid #78350f"></div> Missing Punch</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1a1008;border:1px solid #7c2d12"></div> Extra Entries</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1e0a0a;border:1px solid #7f1d1d"></div> Same In/Out</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#180e18;border:1px solid #4c1d95"></div> Short Hours</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0a1a1e;border:1px solid #155e75"></div> Odd Timing</div>
+      <div class="legend-item" style="color:var(--muted);font-size:10px;">Click any cell for full detail</div>
     </div>
 
     <div class="calendar-wrap">
       <table class="cal">
-        <thead><tr>
-          ${Array.from({length:7},(_,i)=>`<th>Day ${i+1} block</th>`).join('')}
-        </tr></thead>
+        <thead><tr>${Array.from({length:COLS},(_,i)=>`<th>Week ${Math.floor(i/7)+1} · Col ${i%10+1}</th>`).join('')}</tr></thead>
         <tbody>${calRows}</tbody>
       </table>
     </div>
 
-    ${anomRows ? `
-    <div class="anom-section">
-      <div class="section-title" style="margin-top:28px;">Anomaly Details — ${emp.name}</div>
-      <table class="anom-table">
-        <thead><tr><th>Day</th><th>Type</th><th>Description</th><th>Timestamps</th></tr></thead>
-        <tbody>${anomRows}</tbody>
-      </table>
-    </div>` : `<p style="color:var(--green);margin-top:20px;">✓ No anomalies found for ${emp.name}</p>`}
+    ${anomRows?`<div class="anom-section">
+      <div class="section-title" style="margin-top:24px;">Anomaly Log — ${emp.name} <span>(${totalAnomDays} days)</span>
+        <small style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">Click row for detail</small>
+      </div>
+      <table class="anom-table"><thead><tr><th>Day</th><th>Timestamps</th><th>Flags</th><th>Details</th></tr></thead>
+      <tbody>${anomRows}</tbody></table>
+    </div>`:`<p style="color:var(--green);margin-top:18px;font-size:13px;">✓ No anomalies for ${emp.name}</p>`}
   `;
 
-  detailEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  detailEl.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DAY DETAIL MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function openDayModal(empId, dayNum){
+  const emp=GLOBAL_DATA.employees.find(e=>e.id===empId);
+  if(!emp) return;
+  const day=emp.days[dayNum];
+
+  let body=`<div class="modal-title">${emp.name} — Day ${dayNum}</div>
+    <div class="modal-sub">ID: ${emp.id}  ·  Dept: ${emp.dept||'N/A'}  ·  Period Day ${dayNum}</div>`;
+
+  if(!day||day.anomalyType==='absent'){
+    body+=`<div class="modal-flag modal-flag-red">❌ No attendance record for this day.</div>`;
+  } else {
+    // In/Out combos
+    body+=`<div class="modal-section"><div class="modal-section-label">In / Out Entries</div>`;
+    for(let p=0;p<day.pairs.length;p++){
+      const pr=day.pairs[p];
+      const dur=toMin(pr.out)-toMin(pr.in);
+      let durStr=dur>0?minToHM(dur):`⚠ Out before In`;
+      let entryLabel=p===0?'Primary':'Extra #'+(p+1);
+      let rowStyle='';
+      if(pr.in===pr.out) rowStyle='border:1px solid #7f1d1d;';
+      else if(dur<240&&dur>0) rowStyle='border:1px solid #4c1d95;';
+      else if(p>0) rowStyle='border:1px solid #7c2d12;';
+      body+=`<div class="modal-entry-row" style="${rowStyle}">
+        <span style="font-size:10px;color:var(--muted);min-width:60px;">${entryLabel}</span>
+        <span class="t-in">↑ ${pr.in}</span>
+        <span style="color:var(--muted)">→</span>
+        <span class="t-out">↓ ${pr.out}</span>
+        <span class="duration">${dur>0?'⏱ '+durStr:'⚠ '+durStr}</span>
+      </div>`;
+    }
+    for(const t of day.soloIns)
+      body+=`<div class="modal-entry-row" style="border:1px solid #1e3a6e;"><span class="t-in">↑ Check-in: ${t}</span><span class="duration" style="color:var(--yellow);">⚠ No matching out</span></div>`;
+    for(const t of day.soloOuts)
+      body+=`<div class="modal-entry-row" style="border:1px solid #4c1d95;"><span class="t-out">↓ Check-out: ${t}</span><span class="duration" style="color:var(--yellow);">⚠ No matching in</span></div>`;
+    body+=`</div>`;
+
+    // All timestamps raw
+    body+=`<div class="modal-section"><div class="modal-section-label">All Raw Timestamps (${day.rawTs.length})</div>
+      <div class="ts-list" style="margin-top:6px;">`;
+    for(const t of day.rawTs){
+      let cls='ts-chip';
+      if(toMin(t)<7*60||toMin(t)>22*60+30) cls+=' ts-flag';
+      body+=`<span class="${cls}">${t}</span>`;
+    }
+    body+=`</div></div>`;
+
+    // Flags
+    if(day.anomalies&&day.anomalies.length){
+      body+=`<div class="modal-section"><div class="modal-section-label">⚠ Anomalies Detected (${day.anomalies.length})</div>`;
+      const flagStyle={red:'modal-flag-red',orange:'modal-flag-orange',yellow:'modal-flag-yellow',purple:'modal-flag-purple',blue:'modal-flag-blue',cyan:'modal-flag-cyan'};
+      const flagIcon={red:'🔴',orange:'🟠',yellow:'🟡',purple:'🟣',blue:'🔵',cyan:'🔵'};
+      for(const a of day.anomalies)
+        body+=`<div class="modal-flag ${flagStyle[a.severity]||'modal-flag-orange'}">${flagIcon[a.severity]||'⚠'} <strong>${a.label}:</strong> ${a.desc}</div>`;
+      body+=`</div>`;
+    } else {
+      body+=`<div class="modal-flag" style="background:#0f2218;color:#4ade80;border:1px solid #166534;">✅ No anomalies — normal attendance day</div>`;
+    }
+  }
+
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('modalOverlay').style.display='flex';
+}
+
+function closeModal(e){ if(e.target.id==='modalOverlay') closeModalDirect(); }
+function closeModalDirect(){ document.getElementById('modalOverlay').style.display='none'; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModalDirect(); });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RE-RENDER TABS ON FILTER
+// ═══════════════════════════════════════════════════════════════════════════════
+const _origApplyFilters=applyFilters;
+// patch to also render tabs first time
+let _tabsRendered=false;
+function applyFilters(){
+  if(!GLOBAL_DATA) return;
+  if(!_tabsRendered){ renderEmployeeTabs(); _tabsRendered=true; }
+  const filteredIds=getFilteredEmpIds();
+  document.getElementById('empCountLabel').textContent=`(${filteredIds.length} shown)`;
+  document.querySelectorAll('.emp-tab').forEach(t=>{ t.classList.toggle('hidden',!filteredIds.includes(t.dataset.empId)); });
+  renderGlobalAnomalyTable(filteredIds);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DOWNLOAD CLEAN EXCEL
+// ═══════════════════════════════════════════════════════════════════════════════
+function downloadExcel(){
+  if(!GLOBAL_DATA){ alert('No data loaded.'); return; }
+  const {employees,totalDays,dateRange}=GLOBAL_DATA;
+
+  const wb=XLSX.utils.book_new();
+
+  // ── Sheet 1: Master Attendance Log ──────────────────────────────────────────
+  const masterRows=[
+    ['ZTE Attendance Report — Clean Export'],
+    ['Period: '+dateRange, '', '', '', 'Generated: '+new Date().toLocaleString()],
+    [],
+    ['Emp ID','Name','Dept','Day','Date Day','Check In 1','Check Out 1','Hours 1','Check In 2','Check Out 2','Hours 2','Check In 3','Check Out 3','Hours 3','Solo Punches','Total Punches','Status','Anomalies']
+  ];
+
+  const anomalyRows=[
+    ['ZTE Attendance — Anomaly Summary'],
+    ['Period: '+dateRange],
+    [],
+    ['Emp ID','Name','Day','Anomaly Type','Severity','Description','All Timestamps']
+  ];
+
+  const summaryRows=[
+    ['ZTE Attendance — Employee Summary'],
+    ['Period: '+dateRange],
+    [],
+    ['Emp ID','Name','Dept','Present Days','Absent Days','Attendance %','Missing Punch','Extra Entries','Same In/Out','Short Hours (<4h)','Odd Timings','Total Anomaly Days']
+  ];
+
+  for(const emp of employees){
+    let empPresent=0,empAbsent=0,empSolo=0,empExtra=0,empSame=0,empShort=0,empOdd=0,empAnomDays=0;
+
+    for(let d=1;d<=totalDays;d++){
+      const day=emp.days[d]||{pairs:[],soloIns:[],soloOuts:[],rawTs:[],anomalyType:'absent',anomalies:[],flags:[]};
+
+      // Compute status + anomaly string
+      let status='Absent';
+      if(day.anomalyType!=='absent'){
+        if(!day.anomalies||!day.anomalies.length) status='Normal';
+        else status='Anomaly';
+        empPresent++;
+      } else empAbsent++;
+
+      if(day.flags){
+        if(day.flags.includes('solo')) empSolo++;
+        if(day.flags.includes('extra')) empExtra++;
+        if(day.flags.includes('same-time')) empSame++;
+        if(day.flags.includes('short')) empShort++;
+        if(day.flags.includes('odd-time')) empOdd++;
+      }
+      if(day.anomalies&&day.anomalies.length) empAnomDays++;
+
+      const p0=day.pairs[0]||null, p1=day.pairs[1]||null, p2=day.pairs[2]||null;
+      const dur=(p)=>{ if(!p) return ''; const d=toMin(p.out)-toMin(p.in); return d>0?minToHM(d):'?'; };
+      const solos=[...((day.soloIns)||[]),...((day.soloOuts)||[])].join(', ');
+      const anomStr=(day.anomalies||[]).map(a=>a.label).join('; ');
+
+      masterRows.push([
+        emp.id, emp.name, emp.dept||'', d, `Day ${d}`,
+        p0?p0.in:'', p0?p0.out:'', dur(p0),
+        p1?p1.in:'', p1?p1.out:'', dur(p1),
+        p2?p2.in:'', p2?p2.out:'', dur(p2),
+        solos, (day.rawTs||day.timestamps||[]).length,
+        status, anomStr
+      ]);
+
+      // Anomaly rows
+      for(const a of (day.anomalies||[])){
+        anomalyRows.push([emp.id, emp.name, d, a.label, a.severity, a.desc, (day.rawTs||[]).join(', ')]);
+      }
+    }
+
+    // Summary row
+    const pct=Math.round((empPresent/totalDays)*100);
+    summaryRows.push([emp.id,emp.name,emp.dept||'',empPresent,empAbsent,pct+'%',empSolo,empExtra,empSame,empShort,empOdd,empAnomDays]);
+  }
+
+  // Write sheets
+  const ws1=XLSX.utils.aoa_to_sheet(masterRows);
+  const ws2=XLSX.utils.aoa_to_sheet(anomalyRows);
+  const ws3=XLSX.utils.aoa_to_sheet(summaryRows);
+
+  // Column widths
+  const setWidths=(ws,widths)=>{ ws['!cols']=widths.map(w=>({wch:w})); };
+  setWidths(ws1,[8,16,10,5,8,8,8,8,8,8,8,8,8,8,14,8,10,30]);
+  setWidths(ws2,[8,16,5,20,10,45,30]);
+  setWidths(ws3,[8,16,10,8,8,8,10,10,10,10,10,10]);
+
+  XLSX.utils.book_append_sheet(wb,ws1,'Master Log');
+  XLSX.utils.book_append_sheet(wb,ws2,'Anomalies');
+  XLSX.utils.book_append_sheet(wb,ws3,'Employee Summary');
+
+  XLSX.writeFile(wb,'Attendance_Clean_Export.xlsx');
 }
 </script>
 </body>
